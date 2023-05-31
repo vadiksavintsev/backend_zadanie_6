@@ -156,10 +156,8 @@ transform: scale(1.5);
             
                 <td>
                     <?php foreach ($power as $power){
-                        <div>
                             <input type="checkbox" name="power[<?= $user_id ?>][]" value="<?= $power['id'] ?>" <?= in_array($power['id'], $user_abilities) ? 'checked' : '' ?>>
                             <?= htmlspecialchars($power['power']) ?>
-                        </div>
         }
                      endforeach; ?>
                 </td>
