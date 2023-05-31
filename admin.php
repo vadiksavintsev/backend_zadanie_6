@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $update_sql = "UPDATE users SET name = ?, email = ?, year = ?, gender = ?, limbs = ?, bio = ?, contract = ? WHERE id = ?";
         $update_stmt = $db->prepare($update_sql);
-        $update_stmt->execute([$name, $email, $ear, $gender, $limbs, $bio, $contract, $id]);
+        $update_stmt->execute([$name, $email, $year, $gender, $limbs, $bio, $contract, $id]);
 
         $delete_abilities_sql = "DELETE FROM user_abilities WHERE user_id = ?";
         $delete_abilities_stmt = $db->prepare($delete_abilities_sql);
