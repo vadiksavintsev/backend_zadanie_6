@@ -17,15 +17,15 @@ function getSelected($fieldName, $value)
     return '';
 }
 if(isset($_POST['year'])) {
-  $selectedYear = $_POST['year'];
+  $selectedYear = $_POST['birth_year'];
   setcookie('year', $selectedYear, time() + (86400 * 30), "/"); // сохраняем куку на 30 дней
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // Получаем выбранные значения и записываем их в куки-файл
-  if (isset($_POST["power"])) {
-    $selectedA = implode(',', $_POST["power"]);
-    setcookie('power', $selectedA, time() + 3600, '/');
+  if (isset($_POST["abilities"])) {
+    $selectedA = implode(',', $_POST["abilities"]);
+    setcookie('abilities', $selectedA, time() + 3600, '/');
   }
 }
 
@@ -80,8 +80,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $year = $_POST["year"];
     $gender = $_POST["gender"];
     $limbs = $_POST["limbs"];
-    $power = $_POST["power"];
-    $biography = $_POST["biography"];
+    $abilities = $_POST["abilities"];
+    $bio = $_POST["bio"];
     $contract = $_POST["contract"] == "accepted";
 
     // Валидация данных
@@ -135,8 +135,8 @@ $_SESSION['data'] = [
     'year' => $year,
     'gender' => $gender,
     'limbs' => $limbs,
-    'power' => $power,
-    'biography' => $biography,
+    'abilities' => $abilities,
+    'bio' => $bio,
     'contract' => $contract
 ];
     // Сохранение данных, если нет ошибок
@@ -144,25 +144,25 @@ $_SESSION['data'] = [
         unset($_SESSION['errors']);
 
          try {
-            $stmt = $db->prepare("INSERT INTO users (name, email, year, gender, limbs, biography, contract) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$name, $email, $year, $gender, $limbs, $biography, $contract]);
+            $stmt = $db->prepare("INSERT INTO users (name, email, year, gender, limbs, bio, contract) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$name, $email, $year, $gender, $limbs, $bio, $contract]);
  
             $user_id = $db->lastInsertId();
- 
+            
             $login = 's' . sprintf('%07d', mt_rand(0, 9999999));
             $password = bin2hex(random_bytes(8));
             $hased_password = password_hash($password, PASSWORD_DEFAULT);
             
             $stmt = $db->prepare("INSERT INTO user_auth (user_id, login, password) VALUES (?, ?, ?)");
             $stmt->execute([$user_id, $login, $hased_password]);
-            
-            $stmt = $db->prepare("SELECT id_power FROM power WHERE power = ?");
-            foreach ($powers as $value) {
-            $stmt->execute([$value]);
-            $id_power = $stmt->fetchColumn();
  
-            $stmt2 = $db->prepare("INSERT INTO namepower (id_person, id_power) VALUES (?, ?)");
-            $stmt2->execute([$user_id, $id_power]);
+            $stmt = $db->prepare("SELECT id FROM abilities WHERE ability_name = ?");
+            foreach ($abilities as $ability) {
+            $stmt->execute([$ability]);
+            $ability_id = $stmt->fetchColumn();
+ 
+            $stmt2 = $db->prepare("INSERT INTO user_abilities (user_id, ability_id) VALUES (?, ?)");
+            $stmt2->execute([$user_id, $ability_id]);
             }
             
             $_SESSION['login'] = $login;
@@ -175,8 +175,8 @@ $_SESSION['data'] = [
             setcookie('year', $year, $cookie_expires);
             setcookie('gender', $gender, $cookie_expires);
             setcookie('limbs', $limbs, $cookie_expires);
-            setcookie('power', implode(',', $power), $cookie_expires);
-            setcookie('biography', $biography, $cookie_expires);
+            setcookie('abilities', implode(',', $abilities), $cookie_expires);
+            setcookie('bio', $bio, $cookie_expires);
             setcookie('contract', $contract, $cookie_expires);
             unset($_SESSION['data']);
 
