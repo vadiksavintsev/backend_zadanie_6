@@ -152,7 +152,7 @@ transform: scale(1.5);
                     </select>
                 </td>
                 <td><input type="number" name="limbs[<?= $user_id ?>]" value="<?= $user['limbs'] ?>" min="1" max="4"></td>
-                <td><textarea name="biography[<?= $user_id ?>]"><?= htmlspecialchars($user['biogprahy']) ?></textarea></td>
+                <td><textarea name="biography[<?= $user_id ?>]"><?= htmlspecialchars($user['biography']) ?></textarea></td>
             
                 <td>
                     <?php foreach ($abilities as $ability) : ?>
