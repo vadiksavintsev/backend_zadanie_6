@@ -155,9 +155,9 @@ transform: scale(1.5);
                 <td><textarea name="biography[<?= $user_id ?>]"><?= htmlspecialchars($user['biography']) ?></textarea></td>
             
                 <td>
-                    <?php foreach ($abilities as $ability) : ?>
+                    <?php foreach ($power as $powers) : ?>
                         <div>
-                            <input type="checkbox" name="power[<?= $user_id ?>][]" value="<?= $power['id_person'] ?>" <?= in_array($power['id_person'], $user_abilities) ? 'checked' : '' ?>>
+                            <input type="checkbox" name="power[<?= $user_id ?>][]" value="<?= $power['id'] ?>" <?= in_array($power['id'], $user_abilities) ? 'checked' : '' ?>>
                             <?= htmlspecialchars($power['power']) ?>
                         </div>
                     <?php endforeach; ?>
