@@ -138,7 +138,7 @@ transform: scale(1.5);
             $user_id = $user['id'];
             $user_abilities_sql = "SELECT id_power FROM namepower WHERE id_person = ?";
             $user_abilities_stmt = $db->prepare($user_abilities_sql);
-            $user_abilities_stmt->execute([$id_person]);
+            $user_abilities_stmt->execute([$user_id]);
             $user_abilities = $user_abilities_stmt->fetchAll(PDO::FETCH_COLUMN, 0);
             ?>
             <tr>
@@ -182,7 +182,7 @@ transform: scale(1.5);
     </tr>
     <?php
     $sql = "SELECT p.power, COUNT(ua.id_person) AS user_count
-            FROM power a
+            FROM power p
             JOIN namepower ua ON p.id_power = ua.id_power
             GROUP BY p.id_power";
     $stmt = $db->query($sql);
