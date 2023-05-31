@@ -24,7 +24,7 @@ if(isset($_POST['year'])) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // Получаем выбранные значения и записываем их в куки-файл
   if (isset($_POST["power"])) {
-    $selectedA = implode(',', $_POST["abilities"]);
+    $selectedA = implode(',', $_POST["power"]);
     setcookie('power', $selectedA, time() + 3600, '/');
   }
 }
@@ -147,7 +147,7 @@ $_SESSION['data'] = [
             $stmt = $db->prepare("INSERT INTO users (name, email, year, gender, limbs, biography, contract) VALUES (?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute([$name, $email, $year, $gender, $limbs, $biography, $contract]);
  
-            $last_index = $db->lastInsertId();
+            $user_id = $db->lastInsertId();
  
             $login = 's' . sprintf('%07d', mt_rand(0, 9999999));
             $password = bin2hex(random_bytes(8));
@@ -162,7 +162,7 @@ $_SESSION['data'] = [
             $id_power = $stmt->fetchColumn();
  
             $stmt2 = $db->prepare("INSERT INTO namepower (id_person, id_power) VALUES (?, ?)");
-            $stmt2->execute([$last_index, $id_power]);
+            $stmt2->execute([$user_id, $id_power]);
             }
             
             $_SESSION['login'] = $login;
