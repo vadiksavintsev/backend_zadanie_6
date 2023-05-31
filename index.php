@@ -60,7 +60,7 @@
                     <option value="ignition" <?= getSelected('power', 'ignition') ?>>Воспламенение</option>
                     <option value="elements" <?= getSelected('power', 'elements') ?>>Управление стихиями</option>
                </select>
-            <?php if (!empty($messages['abilities'])) {print($messages['abilities']);}?>
+            <?php if (!empty($messages['power'])) {print($messages['power']);}?>
 
             <label for="biography">Биография:</label>
             <textarea name="biography" id="biography"><?= getFieldValue('biography') ?></textarea>
