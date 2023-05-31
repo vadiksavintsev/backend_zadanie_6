@@ -71,11 +71,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $delete_abilities_stmt = $db->prepare($delete_abilities_sql);
         $delete_abilities_stmt->execute([$id]);
 
-        foreach ($abilities as $ability) {
-            if (isset($_POST['power'][$id]) && in_array($ability['id'], $_POST['power'][$id])) {
+        foreach ($power as $ability) {
+            if (isset($_POST['power'][$id]) && in_array($ability['id_power'], $_POST['power'][$id])) {
                 $insert_abilities_sql = "INSERT INTO namepower (id_person, id_power) VALUES (?, ?)";
                 $insert_abilities_stmt = $db->prepare($insert_abilities_sql);
-                $insert_abilities_stmt->execute([$id, $ability['id']]);
+                $insert_abilities_stmt->execute([$id, $ability['id_power']]);
             }
         }
     }
@@ -157,7 +157,7 @@ transform: scale(1.5);
                 <td>
                     <?php foreach ($power as $power) : ?>
                         <div>
-                            <input type="checkbox" name="power[<?= $user_id ?>][]" value="<?= $powers['id_power'] ?>" <?= in_array($powers['id_power'], $user_abilities) ? 'checked' : '' ?>>
+                            <input type="checkbox" name="power[<?= $user_id ?>][]" value="<?= $power['id'] ?>" <?= in_array($power['id'], $user_abilities) ? 'checked' : '' ?>>
                             <?= htmlspecialchars($power['power']) ?>
                         </div>
                     <?php endforeach; ?>
