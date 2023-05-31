@@ -60,12 +60,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $year = $_POST['year'][$id];
         $gender = $_POST['gender'][$id];
         $limbs = $_POST['limbs'][$id];
-        $bio = $_POST['bio'][$id];
+        $biography = $_POST['biography'][$id];
         $contract = 1;
 
-        $update_sql = "UPDATE users SET name = ?, email = ?, year = ?, gender = ?, limbs = ?, bio = ?, contract = ? WHERE id = ?";
+        $update_sql = "UPDATE users SET name = ?, email = ?, year = ?, gender = ?, limbs = ?, biography = ?, contract = ? WHERE id = ?";
         $update_stmt = $db->prepare($update_sql);
-        $update_stmt->execute([$name, $email, $year, $gender, $limbs, $bio, $contract, $id]);
+        $update_stmt->execute([$name, $email, $year, $gender, $limbs, $biography, $contract, $id]);
 
         $delete_abilities_sql = "DELETE FROM user_abilities WHERE user_id = ?";
         $delete_abilities_stmt = $db->prepare($delete_abilities_sql);
@@ -144,7 +144,7 @@ transform: scale(1.5);
             <tr>
                 <td><input type="text" name="name[<?= $user_id ?>]" value="<?= htmlspecialchars($user['name']) ?>"></td>
                 <td><input type="text" name="email[<?= $user_id ?>]" value="<?= htmlspecialchars($user['email']) ?>"></td>
-                <td><input type="number" name="birth_year[<?= $user_id ?>]" value="<?= $user['birth_year'] ?>" min="1900" max="2023"></td>
+                <td><input type="number" name="year[<?= $user_id ?>]" value="<?= $user['year'] ?>" min="1900" max="2023"></td>
                 <td>
                     <select name="gender[<?= $user_id ?>]">
                         <option value="male" <?= $user['gender'] == 'male' ? 'selected' : '' ?>>Male</option>
