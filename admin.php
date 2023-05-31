@@ -31,7 +31,7 @@ if (isset($_POST['delete_btn'])) {
     $userIdToDelete = $_POST['delete_id'];
  
     try {
-        $stmt = $db->prepare("DELETE FROM namepower WHERE id_person = ?");
+        $stmt = $db->prepare("DELETE FROM user_abilities WHERE user_id = ?");
         $stmt->execute([$userIdToDelete]);
 
         $stmt = $db->prepare("DELETE FROM users WHERE id = ?");
@@ -47,7 +47,7 @@ $sql = "SELECT * FROM users";
 $result = $db->query($sql);
 $users = $result->fetchAll(PDO::FETCH_ASSOC);
 
-$abilities_sql = "SELECT * FROM power";
+$abilities_sql = "SELECT * FROM abilities";
 $abilities_result = $db->query($abilities_sql);
 $abilities = $abilities_result->fetchAll(PDO::FETCH_ASSOC);
 
@@ -60,22 +60,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $year = $_POST['year'][$id];
         $gender = $_POST['gender'][$id];
         $limbs = $_POST['limbs'][$id];
-        $biography = $_POST['biography'][$id];
+        $bio = $_POST['bio'][$id];
         $contract = 1;
 
-        $update_sql = "UPDATE users SET name = ?, email = ?, year = ?, gender = ?, limbs = ?, biography = ?, contract = ? WHERE id = ?";
+        $update_sql = "UPDATE users SET name = ?, email = ?, year = ?, gender = ?, limbs = ?, bio = ?, contract = ? WHERE id = ?";
         $update_stmt = $db->prepare($update_sql);
-        $update_stmt->execute([$name, $email, $year, $gender, $limbs, $biography, $contract, $id]);
+        $update_stmt->execute([$name, $email, $ear, $gender, $limbs, $bio, $contract, $id]);
 
-        $delete_abilities_sql = "DELETE FROM namepower WHERE id_person = ?";
+        $delete_abilities_sql = "DELETE FROM user_abilities WHERE user_id = ?";
         $delete_abilities_stmt = $db->prepare($delete_abilities_sql);
         $delete_abilities_stmt->execute([$id]);
 
-        foreach ($power as $ability) {
-            if (isset($_POST['power'][$id]) && in_array($ability['id_power'], $_POST['power'][$id])) {
-                $insert_abilities_sql = "INSERT INTO namepower (id_person, id_power) VALUES (?, ?)";
+        foreach ($abilities as $ability) {
+            if (isset($_POST['abilities'][$id]) && in_array($ability['id'], $_POST['abilities'][$id])) {
+                $insert_abilities_sql = "INSERT INTO user_abilities (user_id, ability_id) VALUES (?, ?)";
                 $insert_abilities_stmt = $db->prepare($insert_abilities_sql);
-                $insert_abilities_stmt->execute([$id, $ability['id_power']]);
+                $insert_abilities_stmt->execute([$id, $ability['id']]);
             }
         }
     }
@@ -136,7 +136,7 @@ transform: scale(1.5);
         <?php foreach ($users as $user) : ?>
             <?php
             $user_id = $user['id'];
-            $user_abilities_sql = "SELECT id_power FROM namepower WHERE id_person = ?";
+            $user_abilities_sql = "SELECT ability_id FROM user_abilities WHERE user_id = ?";
             $user_abilities_stmt = $db->prepare($user_abilities_sql);
             $user_abilities_stmt->execute([$user_id]);
             $user_abilities = $user_abilities_stmt->fetchAll(PDO::FETCH_COLUMN, 0);
@@ -144,7 +144,7 @@ transform: scale(1.5);
             <tr>
                 <td><input type="text" name="name[<?= $user_id ?>]" value="<?= htmlspecialchars($user['name']) ?>"></td>
                 <td><input type="text" name="email[<?= $user_id ?>]" value="<?= htmlspecialchars($user['email']) ?>"></td>
-                <td><input type="number" name="year[<?= $user_id ?>]" value="<?= $user['year'] ?>" min="1900" max="2023"></td>
+                <td><input type="number" name="birth_year[<?= $user_id ?>]" value="<?= $user['birth_year'] ?>" min="1900" max="2023"></td>
                 <td>
                     <select name="gender[<?= $user_id ?>]">
                         <option value="male" <?= $user['gender'] == 'male' ? 'selected' : '' ?>>Male</option>
@@ -152,13 +152,13 @@ transform: scale(1.5);
                     </select>
                 </td>
                 <td><input type="number" name="limbs[<?= $user_id ?>]" value="<?= $user['limbs'] ?>" min="1" max="4"></td>
-                <td><textarea name="biography[<?= $user_id ?>]"><?= htmlspecialchars($user['biography']) ?></textarea></td>
+                <td><textarea name="bio[<?= $user_id ?>]"><?= htmlspecialchars($user['bio']) ?></textarea></td>
             
                 <td>
-                    <?php foreach ($power as $powers)
+                    <?php foreach ($abilities as $ability) : ?>
                         <div>
-                            <input type="checkbox" name="power[<?= $user_id ?>][]" value="<?= $powers['id_power'] ?>" <?= in_array($powers['id_power'], $user_abilitites) ? 'checked' : '' ?>>
-                            <?= htmlspecialchars($power['power']) ?>
+                            <input type="checkbox" name="abilities[<?= $user_id ?>][]" value="<?= $ability['id'] ?>" <?= in_array($ability['id'], $user_abilities) ? 'checked' : '' ?>>
+                            <?= htmlspecialchars($ability['ability_name']) ?>
                         </div>
                     <?php endforeach; ?>
                 </td>
@@ -181,16 +181,16 @@ transform: scale(1.5);
         <th>Num of users</th>
     </tr>
     <?php
-    $sql = "SELECT p.power, COUNT(ua.id_person) AS user_count
-            FROM power p
-            JOIN namepower ua ON p.id_power = ua.id_power
-            GROUP BY p.id_power";
+    $sql = "SELECT a.ability_name, COUNT(ua.user_id) AS user_count
+            FROM abilities a
+            JOIN user_abilities ua ON a.id = ua.ability_id
+            GROUP BY a.id";
     $stmt = $db->query($sql);
     $abilities_stats = $stmt->fetchAll(PDO::FETCH_ASSOC);
  
     foreach ($abilities_stats as $ability_stat) {
         echo "<tr>";
-        echo "<td>" . htmlspecialchars($ability_stat['power']) . "</td>";
+        echo "<td>" . htmlspecialchars($ability_stat['ability_name']) . "</td>";
         echo "<td>" . htmlspecialchars($ability_stat['user_count']) . "</td>";
         echo "</tr>";
     }
