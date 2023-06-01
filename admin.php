@@ -127,14 +127,14 @@ transform: scale(1.5);
 <form action="admin.php" method="post">
     <table>
         <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Birth year</th>
-            <th>Gender</th>
-            <th>Num of limbs</th>
-            <th>Bio</th>
-            <th>Abilities</th>
-            <th>REMOVE</th>
+            <th>Имя</th>
+            <th>Почта</th>
+            <th>Год</th>
+            <th>Пол</th>
+            <th>Кол-во конечностей</th>
+            <th>Биография</th>
+            <th>Способности</th>
+            <th>Удалить</th>
         </tr>
         <?php foreach ($users as $user) : ?>
             <?php
@@ -168,20 +168,20 @@ transform: scale(1.5);
                 <td>
                 <form method="POST">
                   <input type="hidden" name="delete_id" value="<?= $user['id'] ?>">
-                  <button type="submit" name="delete_btn" class="delete-button">Remove</button>
+                  <button type="submit" name="delete_btn" class="delete-button">Удалить</button>
                 </td>
                 </form>
             </tr>
         <?php endforeach; ?>
     </table>
-    <button type="submit">Save</button>
+    <button type="submit">Сохранить</button>
 </form>
 
 <h2>Stats</h2>
 <table border="1">
     <tr>
-        <th>Ability</th>
-        <th>Num of users</th>
+        <th>Способность</th>
+        <th>Кол-во пользователей с этой способностью</th>
     </tr>
     <?php
     $sql = "SELECT a.ability_name, COUNT(ua.user_id) AS user_count
